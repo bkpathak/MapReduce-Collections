@@ -3,7 +3,6 @@ package com.cloudwick.mapreduce.customlogoutputformat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -39,7 +38,7 @@ public class LogOutputDriver extends Configured implements Tool {
         return (success ? 0 : 1);
     }
 
-    public void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         int exitCode = ToolRunner.run(conf, new LogOutputDriver(), args);
         System.exit(exitCode);

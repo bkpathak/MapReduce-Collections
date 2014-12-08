@@ -28,7 +28,7 @@ public class LogRecordWriter<K, V> extends RecordWriter<K, V> {
         // format output by separating the key value with =>
         // and surround the value with ()
 
-        String outString = key.toString() + " => " + "( " + value.toString() + ")";
+        String outString = key.toString() + " => " + "( " + value.toString() + ") \n";
         out.writeBytes(outString);
     }
 }
