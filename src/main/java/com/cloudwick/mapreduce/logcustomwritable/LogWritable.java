@@ -96,7 +96,6 @@ public class LogWritable implements WritableComparable<LogWritable> {
                 ", " + this.requestPage + ")";
     }
 
-
     @Override
     public void readFields(DataInput dataInput) throws IOException {
         ipAddress.readFields(dataInput);
@@ -107,7 +106,6 @@ public class LogWritable implements WritableComparable<LogWritable> {
     }
 
     @Override
-
     public void write(DataOutput out) throws IOException {
         ipAddress.write(out);
         timeStamp.write(out);
