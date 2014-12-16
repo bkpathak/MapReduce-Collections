@@ -24,7 +24,7 @@ public class LogProcessingTest {
 
     @Before
     public void setUp() {
-        LogProcessMapper mapper = new LogProcessMapper();
+        LogMapper mapper = new LogMapper();
         LogStatusReducer reducer = new LogStatusReducer();
         mapDriver = MapDriver.newMapDriver(mapper);
         reduceDriver = ReduceDriver.newReduceDriver(reducer);
