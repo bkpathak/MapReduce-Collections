@@ -18,25 +18,25 @@ import java.io.IOException;
  */
 public class AverageReducerWithRecords
         extends Reducer<Text, IntWritable, Text, DoubleWritable> {
-    private DoubleWritable result = new DoubleWritable();
-    private Counter mapOutputRecords = null;
-    long totalRecords;
+  private DoubleWritable result = new DoubleWritable();
+  private Counter mapOutputRecords = null;
+  long totalRecords;
 
-    @Override
-    protected void setup(Context context) {
-        mapOutputRecords = context.getCounter("org.apache.hadoop.mapred.Task$Counter",
-                "MAP_OUTPUT_RECORDS");
-        totalRecords = mapOutputRecords.getValue();
-    }
+  @Override
+  protected void setup(Context context) {
+    mapOutputRecords = context.getCounter("org.apache.hadoop.mapred.Task$Counter",
+            "MAP_OUTPUT_RECORDS");
+    totalRecords = mapOutputRecords.getValue();
+  }
 
-    @Override
-    public void reduce(Text key, Iterable<IntWritable> values, Context context)
-            throws IOException, InterruptedException {
-        long sum = 0;
-        for (IntWritable val : values) {
-            sum += val.get();
-        }
-        result.set((double) sum / totalRecords);
-        context.write(key, result);
+  @Override
+  public void reduce(Text key, Iterable<IntWritable> values, Context context)
+          throws IOException, InterruptedException {
+    long sum = 0;
+    for (IntWritable val : values) {
+      sum += val.get();
     }
+    result.set((double) sum / totalRecords);
+    context.write(key, result);
+  }
 }
