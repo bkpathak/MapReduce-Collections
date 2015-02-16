@@ -22,37 +22,37 @@ import java.io.IOException;
  */
 public class WordCountDriver extends Configured implements Tool {
 
-    public int run(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        if (args.length != 2) {
-            System.err.println("Usage: WordCount <in> <out>");
-            System.exit(2);
-        }
-
-        Configuration conf = getConf();
-        Job job = Job.getInstance(conf);
-
-        job.setJobName("average word count");
-        job.setJarByClass(WordCountDriver.class);
-        job.setMapperClass(TokenizerMapper.class);
-        job.setCombinerClass(MapperAverageCombiner.class);
-        job.setReducerClass(AverageReducerWithRecords.class);
-
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
-
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DoubleWritable.class);
-
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        int ret = job.waitForCompletion(true) ? 0 : 1;
-        return ret;
-
+  public int run(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+    if (args.length != 2) {
+      System.err.println("Usage: WordCount <in> <out>");
+      System.exit(2);
     }
 
-    public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new WordCountDriver(), args);
-        System.exit(res);
-    }
+    Configuration conf = getConf();
+    Job job = Job.getInstance(conf);
+
+    job.setJobName("average word count");
+    job.setJarByClass(WordCountDriver.class);
+    job.setMapperClass(TokenizerMapper.class);
+    job.setCombinerClass(MapperAverageCombiner.class);
+    job.setReducerClass(AverageReducerWithRecords.class);
+
+    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputValueClass(IntWritable.class);
+
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(DoubleWritable.class);
+
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+    int ret = job.waitForCompletion(true) ? 0 : 1;
+    return ret;
+
+  }
+
+  public static void main(String[] args) throws Exception {
+    int res = ToolRunner.run(new Configuration(), new WordCountDriver(), args);
+    System.exit(res);
+  }
 }
