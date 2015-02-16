@@ -20,22 +20,22 @@ import java.io.IOException;
  */
 public class LogInputFormat extends FileInputFormat<Text, Text> {
 
-    @Override
-    /**
-     * Returns LogRecordReader
-     * @inheritDoc
-     */
-    public RecordReader<Text, Text> createRecordReader(InputSplit split,
-                                                       TaskAttemptContext context) throws IOException, InterruptedException {
-        RecordReader<Text, Text> recordReader = (RecordReader<Text, Text>) new LogRecordReader();
-        recordReader.initialize(split, context);
-        return recordReader;
-    }
+  @Override
+  /**
+   * Returns LogRecordReader
+   * @inheritDoc
+   */
+  public RecordReader<Text, Text> createRecordReader(InputSplit split,
+                                                     TaskAttemptContext context) throws IOException, InterruptedException {
+    RecordReader<Text, Text> recordReader = (RecordReader<Text, Text>) new LogRecordReader();
+    recordReader.initialize(split, context);
+    return recordReader;
+  }
 
-    @Override
-    protected boolean isSplitable(JobContext context, Path file) {
-        final CompressionCodec codec =
-                new CompressionCodecFactory(context.getConfiguration()).getCodec(file);
-        return (null == codec);
-    }
+  @Override
+  protected boolean isSplitable(JobContext context, Path file) {
+    final CompressionCodec codec =
+            new CompressionCodecFactory(context.getConfiguration()).getCodec(file);
+    return (null == codec);
+  }
 }

@@ -16,22 +16,22 @@ import java.io.IOException;
  */
 public class FixedWidthColumnRecordWriter<K, V> extends RecordWriter<K, V> {
 
-    private DataOutputStream out;
+  private DataOutputStream out;
 
-    public FixedWidthColumnRecordWriter(DataOutputStream out) {
-        this.out = out;
-    }
+  public FixedWidthColumnRecordWriter(DataOutputStream out) {
+    this.out = out;
+  }
 
-    @Override
-    public void close(TaskAttemptContext context) throws IOException {
-        out.close();
+  @Override
+  public void close(TaskAttemptContext context) throws IOException {
+    out.close();
 
-    }
+  }
 
-    @Override
-    public void write(K key, V value) throws IOException {
-        // Creates the key value pair
-        String outstring = String.format("%s%s\n", key.toString(), value.toString());
-        out.writeBytes(outstring);
-    }
+  @Override
+  public void write(K key, V value) throws IOException {
+    // Creates the key value pair
+    String outstring = String.format("%s%s\n", key.toString(), value.toString());
+    out.writeBytes(outstring);
+  }
 }

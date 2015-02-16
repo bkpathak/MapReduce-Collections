@@ -12,23 +12,23 @@ import java.io.IOException;
  */
 public class LogRecordWriter<K, V> extends RecordWriter<K, V> {
 
-    private DataOutputStream out;
+  private DataOutputStream out;
 
-    public LogRecordWriter(DataOutputStream out) {
-        this.out = out;
-    }
+  public LogRecordWriter(DataOutputStream out) {
+    this.out = out;
+  }
 
-    @Override
-    public void close(TaskAttemptContext context) throws IOException {
-        out.close();
-    }
+  @Override
+  public void close(TaskAttemptContext context) throws IOException {
+    out.close();
+  }
 
-    @Override
-    public void write(K key, V value) throws IOException {
-        // format output by separating the key value with =>
-        // and surround the value with ()
+  @Override
+  public void write(K key, V value) throws IOException {
+    // format output by separating the key value with =>
+    // and surround the value with ()
 
-        String outString = key.toString() + " => " + "( " + value.toString() + ") \n";
-        out.writeBytes(outString);
-    }
+    String outString = key.toString() + " => " + "( " + value.toString() + ") \n";
+    out.writeBytes(outString);
+  }
 }

@@ -17,31 +17,31 @@ import java.io.IOException;
  */
 public class LogInputFormatDriver extends Configured implements Tool {
 
-    @Override
-    public int run(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        if (args.length != 2) {
-            System.out.printf("Usage: " + this.getClass().getName());
-            System.exit(-1);
-        }
-
-        Configuration conf = getConf();
-        Job job = Job.getInstance();
-
-        job.setJobName("Custom Log Input format");
-        job.setJarByClass(LogInputFormat.class);
-
-        FileInputFormat.setInputPaths(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        job.setInputFormatClass(LogInputFormat.class);
-        job.setNumReduceTasks(0);
-        boolean success = job.waitForCompletion(true);
-        return (success ? 0 : 1);
+  @Override
+  public int run(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+    if (args.length != 2) {
+      System.out.printf("Usage: " + this.getClass().getName());
+      System.exit(-1);
     }
 
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        int exitCode = ToolRunner.run(conf, new LogInputFormatDriver(), args);
-        System.exit(exitCode);
-    }
+    Configuration conf = getConf();
+    Job job = Job.getInstance();
+
+    job.setJobName("Custom Log Input format");
+    job.setJarByClass(LogInputFormat.class);
+
+    FileInputFormat.setInputPaths(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+    job.setInputFormatClass(LogInputFormat.class);
+    job.setNumReduceTasks(0);
+    boolean success = job.waitForCompletion(true);
+    return (success ? 0 : 1);
+  }
+
+  public static void main(String[] args) throws Exception {
+    Configuration conf = new Configuration();
+    int exitCode = ToolRunner.run(conf, new LogInputFormatDriver(), args);
+    System.exit(exitCode);
+  }
 }

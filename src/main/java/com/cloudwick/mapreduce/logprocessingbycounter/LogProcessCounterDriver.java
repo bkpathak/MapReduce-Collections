@@ -16,30 +16,30 @@ import java.io.IOException;
  */
 public class LogProcessCounterDriver extends Configured implements Tool {
 
-    @Override
+  @Override
 
-    public int run(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        if (args.length != 1) {
-            System.err.println("Usage: LogProcessCounterDriver <in> <out>");
-        }
-
-        Configuration conf = getConf();
-        Job job = Job.getInstance(conf);
-
-        job.setJobName("Log processing by counter");
-        job.setJarByClass(LogProcessCounterDriver.class);
-        job.setMapperClass(LogCounterMapper.class);
-
-        job.setNumReduceTasks(0);
-        job.setOutputFormatClass(NullOutputFormat.class);
-
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-
-        int ret = job.waitForCompletion(true) ? 0 : 1;
-        return ret;
+  public int run(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+    if (args.length != 1) {
+      System.err.println("Usage: LogProcessCounterDriver <in> <out>");
     }
 
-    public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new LogProcessCounterDriver(), args);
-    }
+    Configuration conf = getConf();
+    Job job = Job.getInstance(conf);
+
+    job.setJobName("Log processing by counter");
+    job.setJarByClass(LogProcessCounterDriver.class);
+    job.setMapperClass(LogCounterMapper.class);
+
+    job.setNumReduceTasks(0);
+    job.setOutputFormatClass(NullOutputFormat.class);
+
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+
+    int ret = job.waitForCompletion(true) ? 0 : 1;
+    return ret;
+  }
+
+  public static void main(String[] args) throws Exception {
+    int res = ToolRunner.run(new Configuration(), new LogProcessCounterDriver(), args);
+  }
 }

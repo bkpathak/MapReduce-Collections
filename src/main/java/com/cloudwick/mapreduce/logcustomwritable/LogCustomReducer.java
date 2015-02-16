@@ -12,16 +12,16 @@ import java.util.InputMismatchException;
 public class LogCustomReducer
         extends Reducer<LogWritable, IntWritable, LogWritable, IntWritable> {
 
-    private IntWritable result = new IntWritable();
+  private IntWritable result = new IntWritable();
 
-    @Override
-    public void reduce(LogWritable key, Iterable<IntWritable> values, Context context)
-            throws IOException, InterruptedException {
-        int sum = 0;
-        for (IntWritable val : values) {
-            sum += val.get();
-        }
-        result.set(sum);
-        context.write(key, result);
+  @Override
+  public void reduce(LogWritable key, Iterable<IntWritable> values, Context context)
+          throws IOException, InterruptedException {
+    int sum = 0;
+    for (IntWritable val : values) {
+      sum += val.get();
     }
+    result.set(sum);
+    context.write(key, result);
+  }
 }

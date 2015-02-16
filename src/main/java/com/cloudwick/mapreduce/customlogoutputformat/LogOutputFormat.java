@@ -23,30 +23,30 @@ import java.io.IOException;
  */
 public class LogOutputFormat<K, V> extends FileOutputFormat<K, V> {
 
-    @Override
-    public RecordWriter<K, V> getRecordWriter(TaskAttemptContext job) throws IOException {
-        DataOutputStream out;
-        Configuration conf = job.getConfiguration();
+  @Override
+  public RecordWriter<K, V> getRecordWriter(TaskAttemptContext job) throws IOException {
+    DataOutputStream out;
+    Configuration conf = job.getConfiguration();
 
-        if (getCompressOutput(job)) {
-            //if the job output should be compressed, use a compressed output stream
-            Class<? extends CompressionCodec> codecClass = getOutputCompressorClass(job, GzipCodec.class);
-            // create the named codec
-            CompressionCodec codec = ReflectionUtils.newInstance(codecClass, conf);
-            //build the filename including the extension
+    if (getCompressOutput(job)) {
+      //if the job output should be compressed, use a compressed output stream
+      Class<? extends CompressionCodec> codecClass = getOutputCompressorClass(job, GzipCodec.class);
+      // create the named codec
+      CompressionCodec codec = ReflectionUtils.newInstance(codecClass, conf);
+      //build the filename including the extension
 
-            Path file = getDefaultWorkFile(job, codec.getDefaultExtension());
-            FileSystem fs = file.getFileSystem(conf);
-            out = new DataOutputStream(codec.createOutputStream(fs.create(file, false)));
-        } else {
-            // Otherwise open a stream to the default file for this task
-            Path file = getDefaultWorkFile(job, "");
-            FileSystem fs = file.getFileSystem(conf);
-            out = fs.create(file, false);
-        }
-        /**
-         * create the the custom record reader
-         */
-        return new LogRecordWriter<K, V>(out);
+      Path file = getDefaultWorkFile(job, codec.getDefaultExtension());
+      FileSystem fs = file.getFileSystem(conf);
+      out = new DataOutputStream(codec.createOutputStream(fs.create(file, false)));
+    } else {
+      // Otherwise open a stream to the default file for this task
+      Path file = getDefaultWorkFile(job, "");
+      FileSystem fs = file.getFileSystem(conf);
+      out = fs.create(file, false);
     }
+    /**
+     * create the the custom record reader
+     */
+    return new LogRecordWriter<K, V>(out);
+  }
 }

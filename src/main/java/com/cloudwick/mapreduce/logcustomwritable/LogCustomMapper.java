@@ -18,42 +18,42 @@ import java.util.regex.Pattern;
  */
 public class LogCustomMapper extends Mapper<LongWritable, Text, LogWritable, IntWritable> {
 
-    private static final IntWritable one = new IntWritable(1);
-    private LogWritable logEvents = new LogWritable();
+  private static final IntWritable one = new IntWritable(1);
+  private LogWritable logEvents = new LogWritable();
 
+  /**
+   * Compile the given regular expression into a pattern
+   */
+  Pattern pattern = Pattern.compile("((?:\\d{1,3}\\.){3}\\d{1,3}).*" + //ipAddress
+          "((?<=\\[).*(?=\\])).*" +                                      //timeStamp
+          "((?<=\\]\\s\").*(?=\"\\s+\\d))");                         //requestPage
+
+  Matcher matcher;
+
+  @Override
+  public void map(LongWritable key, Text value, Context context)
+          throws IOException, InterruptedException {
+
+    String line = value.toString();
     /**
-     * Compile the given regular expression into a pattern
+     * Creates a matcher that will match the given input against this pattern.
      */
-    Pattern pattern = Pattern.compile("((?:\\d{1,3}\\.){3}\\d{1,3}).*" + //ipAddress
-            "((?<=\\[).*(?=\\])).*" +                                      //timeStamp
-            "((?<=\\]\\s\").*(?=\"\\s+\\d))");                         //requestPage
+    matcher = pattern.matcher(line);
+    /**
+     * find the next subsequent of the input sequence that matches the pattern.
+     */
+    if (matcher.find()) {
 
-    Matcher matcher;
+      /**
+       * The group() method returns the input subsequence captured by the given group during
+       * the previous match operation.
+       */
 
-    @Override
-    public void map(LongWritable key, Text value, Context context)
-            throws IOException, InterruptedException {
+      logEvents.set(new Text(matcher.group(1)), new Text(matcher.group(2)),
+              new Text(matcher.group(3)));
 
-        String line = value.toString();
-        /**
-         * Creates a matcher that will match the given input against this pattern.
-         */
-        matcher = pattern.matcher(line);
-        /**
-         * find the next subsequent of the input sequence that matches the pattern.
-         */
-        if (matcher.find()) {
-
-            /**
-             * The group() method returns the input subsequence captured by the given group during
-             * the previous match operation.
-             */
-
-            logEvents.set(new Text(matcher.group(1)), new Text(matcher.group(2)),
-                    new Text(matcher.group(3)));
-
-            context.write(logEvents, one);
-        }
-
+      context.write(logEvents, one);
     }
+
+  }
 }

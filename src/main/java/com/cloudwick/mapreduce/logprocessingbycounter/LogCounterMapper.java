@@ -22,23 +22,23 @@ import java.util.regex.Pattern;
  */
 public class LogCounterMapper extends Mapper<LongWritable, Text, NullWritable, NullWritable> {
 
-    private final static IntWritable one = new IntWritable(1);
-    private Text statusCode = new Text();
-    static Counter counter = null;
+  private final static IntWritable one = new IntWritable(1);
+  private Text statusCode = new Text();
+  static Counter counter = null;
 
-    Pattern pattern = Pattern.compile("(?<=\"\\s)\\d{3}(?=\\s+\\d)");
-    Matcher matcher;
+  Pattern pattern = Pattern.compile("(?<=\"\\s)\\d{3}(?=\\s+\\d)");
+  Matcher matcher;
 
-    @Override
-    public void map(LongWritable key, Text value, Context context)
-            throws IOException, InterruptedException {
+  @Override
+  public void map(LongWritable key, Text value, Context context)
+          throws IOException, InterruptedException {
 
-        String line = value.toString();
-        matcher = pattern.matcher(line);
-        matcher.find();
-        statusCode.set(matcher.group());
-        counter = context.getCounter("status counter", statusCode.toString());
-        counter.increment(1);
-    }
+    String line = value.toString();
+    matcher = pattern.matcher(line);
+    matcher.find();
+    statusCode.set(matcher.group());
+    counter = context.getCounter("status counter", statusCode.toString());
+    counter.increment(1);
+  }
 
 }

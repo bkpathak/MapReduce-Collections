@@ -19,35 +19,35 @@ import java.io.IOException;
 
 public class FixedWidthColumnOutputDriver extends Configured implements Tool {
 
-    @Override
-    public int run(String[] args)
-            throws IOException, ClassNotFoundException, InterruptedException {
-        if (args.length != 2) {
-            System.out.println("Usage: " + this.getClass().getName() + " <in dir> <out dir> \n");
-            System.exit(-1);
-        }
-
-        Configuration conf = getConf();
-        Job job = Job.getInstance(conf);
-
-        job.setJobName("Fixed width output format");
-        job.setJarByClass(FixedWidthColumnOutputDriver.class);
-
-        FileInputFormat.setInputPaths(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        job.setOutputFormatClass(FixedWidthColumnOutputFormat.class);
-
-        int ret = job.waitForCompletion(true) ? 0 : 1;
-        return ret;
+  @Override
+  public int run(String[] args)
+          throws IOException, ClassNotFoundException, InterruptedException {
+    if (args.length != 2) {
+      System.out.println("Usage: " + this.getClass().getName() + " <in dir> <out dir> \n");
+      System.exit(-1);
     }
 
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
+    Configuration conf = getConf();
+    Job job = Job.getInstance(conf);
 
-        int exitCode = ToolRunner.run(conf, new FixedWidthColumnOutputDriver(), args);
-        System.exit(exitCode);
-    }
+    job.setJobName("Fixed width output format");
+    job.setJarByClass(FixedWidthColumnOutputDriver.class);
+
+    FileInputFormat.setInputPaths(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+    job.setOutputFormatClass(FixedWidthColumnOutputFormat.class);
+
+    int ret = job.waitForCompletion(true) ? 0 : 1;
+    return ret;
+  }
+
+  public static void main(String[] args) throws Exception {
+    Configuration conf = new Configuration();
+
+    int exitCode = ToolRunner.run(conf, new FixedWidthColumnOutputDriver(), args);
+    System.exit(exitCode);
+  }
 
 }
 
