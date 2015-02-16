@@ -4,15 +4,20 @@ import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.*;
+import org.apache.curator.framework.recipes.atomic.CachedAtomicInteger;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -24,6 +29,7 @@ import java.util.regex.Pattern;
  * address and stored it in the Hash Map which the map can then use to emit the records.
  */
 public class GeoLocationLookupMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+  Logger logger = LoggerFactory.getLogger(GeoLocationLookupMapper.class);
 
   // A File object pointing to your GeoIP2 or GeoLite2 database
   private File database;
@@ -31,6 +37,7 @@ public class GeoLocationLookupMapper extends Mapper<LongWritable, Text, Text, In
   // This creates the DatabaseReader object, which will be reused across lookups.
   private DatabaseReader reader;
 
+  private static int FIELDS = 1;
   private InetAddress ipAddress;
   private Map<String, String> ipLocation;
 
@@ -52,14 +59,6 @@ public class GeoLocationLookupMapper extends Mapper<LongWritable, Text, Text, In
   Matcher matcher;
 
   public GeoLocationLookupMapper() {
-    this.database = new File("/home/bijay/Desktop/HADOOP/data/GeoLite2-City.mmdb");
-    try {
-      this.reader = new DatabaseReader.Builder(database).build();
-    } catch (IOException e) {
-      System.out.println("Database reader object cannot be created.");
-      System.err.println("Caught IOException: " + e.getMessage());
-      e.printStackTrace();
-    }
     this.ipAddress = null;
     this.ipLocation = new HashMap<>();
     this.response = null;
@@ -68,6 +67,16 @@ public class GeoLocationLookupMapper extends Mapper<LongWritable, Text, Text, In
     this.postal = null;
     this.location = null;
 
+
+  }
+
+  @Override
+  protected void setup(Context context) throws IOException {
+    logger.info("Mapper's Setup method");
+    Configuration conf = context.getConfiguration();
+    String geoipFileName = conf.get("geoip.filename");
+    File file = new File(geoipFileName);
+    reader = new DatabaseReader.Builder(file).build();
 
   }
 
@@ -105,21 +114,21 @@ public class GeoLocationLookupMapper extends Mapper<LongWritable, Text, Text, In
 
     String line = value.toString();
     matcher = pattern.matcher(line);
-    ipAddress = InetAddress.getByName(matcher.group());
-    try {
-      geoLocationLookup();
-    } catch (GeoIp2Exception e) {
-      e.printStackTrace();
+    if (!matcher.matches() || FIELDS != matcher.groupCount()) {
+      logger.warn("Unable to parse");
+    } else {
+      ipAddress = InetAddress.getByName(matcher.group());
+      try {
+        geoLocationLookup();
+      } catch (GeoIp2Exception e) {
+        e.printStackTrace();
+      }
     }
-
     for (Map.Entry<String, String> entry : ipLocation.entrySet()) {
       locationEmit.set(entry.getValue());
       context.write(locationEmit, one);
     }
-        /*
-        locationEmit.set(ipLocation.get("country"));
-        context.write(locationEmit, one);
-        */
   }
+
 }
 
