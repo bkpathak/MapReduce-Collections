@@ -13,6 +13,8 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by bijay on 12/16/14.
@@ -21,7 +23,7 @@ public class GeoLocationLookupDriver extends Configured implements Tool {
 
   @Override
   public int run(String[] args)
-          throws IOException, ClassNotFoundException, InterruptedException {
+          throws IOException, ClassNotFoundException, InterruptedException, URISyntaxException {
     if (args.length != 2) {
       System.err.println("Usage: GeoLocationLookup <in> <out>");
       System.exit(2);
@@ -29,12 +31,22 @@ public class GeoLocationLookupDriver extends Configured implements Tool {
 
 
     Configuration conf = getConf();
+    conf.set("geoip.filename", "Geolite2-City.mmdb");
     Job job = Job.getInstance(conf);
 
     job.setJobName("GeoLocation Lookup");
     job.setJarByClass(GeoLocationLookupDriver.class);
     job.setMapperClass(GeoLocationLookupMapper.class);
     job.setReducerClass(GeoLocationLookupReducer.class);
+    job.addCacheFile(new URI(conf.get("fs.defaultFS") + "/" +
+            conf.get("geoip.filename") + "#" + conf.get("geoip.filename")));
+
+    URI[] cacheFiles = job.getCacheFiles();
+    if (cacheFiles != null) {
+      for (URI cachefile : cacheFiles) {
+        System.out.println("Cache file -> " + cachefile);
+      }
+    }
 
     job.setMapOutputKeyClass(Text.class);
     job.setMapOutputValueClass(IntWritable.class);
@@ -42,8 +54,8 @@ public class GeoLocationLookupDriver extends Configured implements Tool {
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(LongWritable.class);
 
-    job.addFileToClassPath(new Path("/home/bijay/Desktop/HADOOP/data/GeoLite2-City.mmdb"));
-    job.addFileToClassPath(new Path("/home/bijay/Desktop/HADOOP/data/geoip2-2.1.0-sources.jar"));
+    //job.addFileToClassPath(new Path("/home/bijay/Desktop/HADOOP/data/GeoLite2-City.mmdb"));
+    //job.addFileToClassPath(new Path("/home/bijay/Desktop/HADOOP/data/geoip2-2.1.0-sources.jar"));
 
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
