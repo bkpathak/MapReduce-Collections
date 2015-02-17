@@ -32,9 +32,9 @@ public class StatusCountDriver extends Configured implements Tool {
 
     job.setJobName("log processing");
     job.setJarByClass(StatusCountDriver.class);
-    job.setMapperClass(IPCountMapper.class);
-    job.setCombinerClass(LogStatusReducer.class);
-    job.setReducerClass(LogStatusReducer.class);
+    job.setMapperClass(StatusCountMapper.class);
+    job.setCombinerClass(StatusCountReducer.class);
+    job.setReducerClass(StatusCountReducer.class);
 
     job.setMapOutputKeyClass(Text.class);
     job.setMapOutputValueClass(IntWritable.class);
