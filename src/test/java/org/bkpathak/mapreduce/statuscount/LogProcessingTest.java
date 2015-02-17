@@ -24,8 +24,8 @@ public class LogProcessingTest {
 
   @Before
   public void setUp() {
-    IPCountMapper mapper = new IPCountMapper();
-    LogStatusReducer reducer = new LogStatusReducer();
+    StatusCountMapper mapper = new StatusCountMapper();
+    StatusCountReducer reducer = new StatusCountReducer();
     mapDriver = MapDriver.newMapDriver(mapper);
     reduceDriver = ReduceDriver.newReduceDriver(reducer);
     mapReduceDriver = MapReduceDriver.newMapReduceDriver(mapper, reducer);
