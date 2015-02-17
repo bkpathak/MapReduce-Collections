@@ -1,4 +1,4 @@
-package org.bkpathak.mapreduce.logprocessing;
+package org.bkpathak.mapreduce.statuscount;
 
 
 import org.apache.hadoop.conf.Configuration;
@@ -17,7 +17,7 @@ import java.io.IOException;
 /**
  * Created by bijay on 11/26/14.
  */
-public class LogProcessDriver extends Configured implements Tool {
+public class StatusCountDriver extends Configured implements Tool {
 
   @Override
   public int run(String[] args)
@@ -31,8 +31,8 @@ public class LogProcessDriver extends Configured implements Tool {
     Job job = Job.getInstance(conf);
 
     job.setJobName("log processing");
-    job.setJarByClass(LogProcessDriver.class);
-    job.setMapperClass(LogProcessMapper.class);
+    job.setJarByClass(StatusCountDriver.class);
+    job.setMapperClass(IPCountMapper.class);
     job.setCombinerClass(LogStatusReducer.class);
     job.setReducerClass(LogStatusReducer.class);
 
@@ -50,7 +50,7 @@ public class LogProcessDriver extends Configured implements Tool {
   }
 
   public static void main(String[] args) throws Exception {
-    int res = ToolRunner.run(new Configuration(), new LogProcessDriver(), args);
+    int res = ToolRunner.run(new Configuration(), new StatusCountDriver(), args);
     System.exit(res);
   }
 }

@@ -1,4 +1,4 @@
-package org.bkpathak.mapreduce.logprocessing;
+package org.bkpathak.mapreduce.statuscount;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -24,7 +24,7 @@ public class LogProcessingTest {
 
   @Before
   public void setUp() {
-    LogProcessMapper mapper = new LogProcessMapper();
+    IPCountMapper mapper = new IPCountMapper();
     LogStatusReducer reducer = new LogStatusReducer();
     mapDriver = MapDriver.newMapDriver(mapper);
     reduceDriver = ReduceDriver.newReduceDriver(reducer);

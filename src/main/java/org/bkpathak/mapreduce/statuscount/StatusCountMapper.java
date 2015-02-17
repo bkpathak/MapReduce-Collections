@@ -1,4 +1,4 @@
-package org.bkpathak.mapreduce.logprocessing;
+package org.bkpathak.mapreduce.statuscount;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 /**
  * Created by bijay on 11/26/14.
  */
-public class LogProcessMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class StatusCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
   private final static IntWritable one = new IntWritable(1);
   private Text statusCode = new Text();
   Pattern pattern = Pattern.compile("(?<=\"\\s)\\d{3}(?=\\s+\\d)");
